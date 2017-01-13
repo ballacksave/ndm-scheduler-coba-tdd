@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+    <!--BEGIN Scheduler Trending-->
+    <bean id="runTaskTrending" class="com.tosigav.nwtw.cron.RunTaskTrending" />
+
+    <bean name="runJobTrending" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.tosigav.nwtw.cron.RunJobTrending" />
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="runTaskTrending" value-ref="runTaskTrending" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="trendingTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+
+        <property name="jobDetail" ref="runJobTrending" />
+        <property name="repeatInterval" value="1000" />
+        <property name="startDelay" value="3000" />
+
+    </bean>
+
+    <bean id="trendingScheduller" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="runJobTrending" />
+            </list>
+        </property>
+
+        <property name="triggers">
+            <list>
+                <ref bean="trendingTrigger" />
+            </list>
+        </property>
+    </bean>
+    <!--END Scheduler Trending-->
+
+
+        
+</beans>
+
+
+
+    
+
